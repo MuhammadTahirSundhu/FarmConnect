@@ -1,7 +1,7 @@
-package com.example.springone.Service;
+package com.example.springone.FarmersPackage.Service;
 
 
-import com.example.springone.Model.Farmer;
+import com.example.springone.FarmersPackage.Model.Farmer;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.springone.Model;
+package com.example.springone.FarmersPackage.Model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;

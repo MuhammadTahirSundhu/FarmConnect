@@ -1,6 +1,6 @@
-package com.example.springone.Repositry;
+package com.example.springone.FarmersPackage.Repositry;
 
-import com.example.springone.Entity.FarmerEntity;
+import com.example.springone.FarmersPackage.Entity.FarmerEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

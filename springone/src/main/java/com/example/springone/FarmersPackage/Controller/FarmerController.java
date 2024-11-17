@@ -1,7 +1,7 @@
-package com.example.springone.Controller;
+package com.example.springone.FarmersPackage.Controller;
 
-import com.example.springone.Model.Farmer;
-import com.example.springone.Service.FarmerService;
+import com.example.springone.FarmersPackage.Model.Farmer;
+import com.example.springone.FarmersPackage.Service.FarmerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
+@CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/")
 public class FarmerController {

@@ -1,8 +1,8 @@
-package com.example.springone.Service;
+package com.example.springone.FarmersPackage.Service;
 
-import com.example.springone.Entity.FarmerEntity;
-import com.example.springone.Model.Farmer;
-import com.example.springone.Repositry.FarmerRepository;
+import com.example.springone.FarmersPackage.Entity.FarmerEntity;
+import com.example.springone.FarmersPackage.Model.Farmer;
+import com.example.springone.FarmersPackage.Repositry.FarmerRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;

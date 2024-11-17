@@ -1,4 +1,4 @@
-package com.example.springone.Entity;
+package com.example.springone.FarmersPackage.Entity;
 
 import jakarta.persistence.*;
 import java.util.Date;
