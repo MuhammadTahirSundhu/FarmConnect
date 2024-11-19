@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "farmers")
+@Table(name = "farmer")
 public class FarmerEntity {
 
     @Id
@@ -33,15 +33,18 @@ public class FarmerEntity {
     private String password;
 
     // Default constructor
-    public FarmerEntity() {}
+    public FarmerEntity() {
+        Date date = new Date();
+    }
 
     // Constructor with parameters
     public FarmerEntity(int farmerid, String name, String farmlocation, List<String> croptypes, Date registereddate, Boolean availabilitystatus, String email, String password) {
+        Date date = new Date();
         this.farmerid = farmerid;
         this.name = name;
         this.farmlocation = farmlocation;
         this.croptypes = croptypes;
-        this.registereddate = registereddate;
+        this.registereddate = date;
         this.availabilitystatus = availabilitystatus;
         this.email = email;
         this.password = password;
