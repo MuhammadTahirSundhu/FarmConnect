@@ -12,6 +12,7 @@ import java.util.List;
 
 
 @Slf4j
+@CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/")
 public class ProductController {
@@ -84,5 +85,20 @@ public class ProductController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/product/farmer/{id}")
+    public ResponseEntity<List<Product>> getProductsByFarmerId(@PathVariable("id") int id) {
+        try {
+            List<Product> products = productService.getProductsByFarmerId(id);
+            if (products == null || products.isEmpty()) {
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error occurred while fetching all products", e);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Slf4j
+@CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/api/v1/")
 public class FarmerController {

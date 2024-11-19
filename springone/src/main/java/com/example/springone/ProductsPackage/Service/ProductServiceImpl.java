@@ -6,6 +6,7 @@ import com.example.springone.ProductsPackage.Entity.ProductEntity;
 import com.example.springone.ProductsPackage.Model.Product;
 import com.example.springone.ProductsPackage.Repositry.ProductRepositry;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
-    private FarmerRepository farmerRepository;  // Injecting the FarmerRepository
+    @Autowired
+    private FarmerRepository farmerRepository;
+
+    @Autowired
     private ProductRepositry productRepo;
 
     public ProductServiceImpl(ProductRepositry productRepo) {
@@ -26,22 +30,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product insertProduct(Product product) {
+        if (farmerRepository == null) {
+            throw new IllegalStateException("FarmerRepository is not initialized");
+        }
         ProductEntity productEntity = new ProductEntity();
         BeanUtils.copyProperties(product, productEntity);
 
-        // Fetch the FarmerEntity from the database based on the farmerID
         FarmerEntity farmer = farmerRepository.findById(product.getFarmerID())
                 .orElseThrow(() -> new RuntimeException("Farmer with ID " + product.getFarmerID() + " not found"));
-
-        // Set the fetched FarmerEntity into the ProductEntity
         productEntity.setFarmer(farmer);
-
-        // Save the ProductEntity to the database
-//        productRepo.save(productEntity);
-
-        return product;  // Returning the original model object
+        productRepo.save(productEntity);
+        return product;
     }
-
 
     @Override
     public void deleteProduct(int id) {
@@ -98,8 +98,34 @@ public class ProductServiceImpl implements ProductService {
                 .map(productEntity -> {
                     Product product = new Product();
                     BeanUtils.copyProperties(productEntity, product);
+
+                    // Manually map farmerId
+                    if (productEntity.getFarmer() != null) {
+                        product.setFarmerID(productEntity.getFarmer().getFarmerid());
+                    }
+
                     return product;
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Product> getProductsByFarmerId(int id) {
+        List<ProductEntity> productEntities = productRepo.findProductsByFarmerId(id);
+
+        return productEntities.stream()
+                .map(productEntity -> {
+                    Product product = new Product();
+                    BeanUtils.copyProperties(productEntity, product);
+
+                    // Manually map farmerId
+                    if (productEntity.getFarmer() != null) {
+                        product.setFarmerID(productEntity.getFarmer().getFarmerid());
+                    }
+
+                    return product;
+                })
+                .collect(Collectors.toList());
+    }
+
 }
