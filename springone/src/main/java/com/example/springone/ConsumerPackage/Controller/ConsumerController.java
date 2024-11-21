@@ -2,6 +2,8 @@ package com.example.springone.ConsumerPackage.Controller;
 
 import com.example.springone.ConsumerPackage.Model.Consumer;
 import com.example.springone.ConsumerPackage.Service.ConsumerService;
+import com.example.springone.DTO.LoginRequest;
+import com.example.springone.FarmersPackage.Model.Farmer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,6 +76,22 @@ public class ConsumerController {
             return new ResponseEntity<>(consumers, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/consumer/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            // Authenticate consumer
+            Consumer consumer = consumerService.login(loginRequest.getEmail(), loginRequest.getPassword());
+            return new ResponseEntity<>(consumer, HttpStatus.OK);
+
+        } catch (RuntimeException e) {
+            // Handle errors
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            // Handle unexpected errors
+            return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

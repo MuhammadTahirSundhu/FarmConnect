@@ -4,6 +4,7 @@ import com.example.springone.FarmersPackage.Entity.FarmerEntity;
 import com.example.springone.FarmersPackage.Model.Farmer;
 import com.example.springone.FarmersPackage.Repositry.FarmerRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class FarmerServiceImpl implements FarmerService {
 
+    @Autowired
     private FarmerRepository farmerRepo;
 
     public FarmerServiceImpl(FarmerRepository farmerRepo) {
@@ -89,6 +91,28 @@ public class FarmerServiceImpl implements FarmerService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Farmer login(String email, String password) {
+
+        FarmerEntity farmerEntity = farmerRepo.findByEmail(email);
 
 
+
+        if (farmerEntity == null) {
+            throw new RuntimeException("Farmer not found");
+        }
+
+        Farmer farmer= new Farmer();
+        BeanUtils.copyProperties(farmerEntity,farmer);
+
+        // Validate password (assuming it's stored as plain text, consider hashing it in real scenarios)
+        if (!farmer.getPassword().equals(password)) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return farmer; // Return farmer details if validation succeeds
+    }
 }
+
+
+

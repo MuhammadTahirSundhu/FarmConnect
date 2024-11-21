@@ -1,6 +1,7 @@
 package com.example.springone.FarmersPackage.Service;
 
 
+import com.example.springone.FarmersPackage.Entity.FarmerEntity;
 import com.example.springone.FarmersPackage.Model.Farmer;
 
 import java.util.List;
@@ -15,4 +16,6 @@ public interface FarmerService {
     Farmer getFarmerById(int id);
 
     List<Farmer> getAllFarmers();
+
+    Farmer login(String email, String password);
 }

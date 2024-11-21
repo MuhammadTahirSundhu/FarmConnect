@@ -1,5 +1,6 @@
 package com.example.springone.FarmersPackage.Controller;
 
+import com.example.springone.DTO.LoginRequest;
 import com.example.springone.FarmersPackage.Model.Farmer;
 import com.example.springone.FarmersPackage.Service.FarmerService;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -74,6 +74,22 @@ public class FarmerController {
             return new ResponseEntity<>(farmers, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/farmer/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            // Authenticate farmer
+            Farmer farmer = farmService.login(loginRequest.getEmail(), loginRequest.getPassword());
+            return new ResponseEntity<>(farmer, HttpStatus.OK);
+
+        } catch (RuntimeException e) {
+            // Handle errors
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            // Handle unexpected errors
+            return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

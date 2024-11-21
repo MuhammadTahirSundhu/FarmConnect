@@ -3,6 +3,8 @@ package com.example.springone.ConsumerPackage.Service;
 import com.example.springone.ConsumerPackage.Entity.ConsumerEntity;
 import com.example.springone.ConsumerPackage.Model.Consumer;
 import com.example.springone.ConsumerPackage.Repositry.ConsumerRepository;
+import com.example.springone.FarmersPackage.Entity.FarmerEntity;
+import com.example.springone.FarmersPackage.Model.Farmer;
 import org.springframework.beans.BeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -85,5 +87,24 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     }
 
+    @Override
+    public Consumer login(String email, String password) {
+        ConsumerEntity consumerEntity = consumerRepo.findByEmail(email);
 
+
+
+        if (consumerEntity == null) {
+            throw new RuntimeException("consumer not found");
+        }
+
+        Consumer consumer= new Consumer();
+        BeanUtils.copyProperties(consumerEntity,consumer);
+
+        // Validate password (assuming it's stored as plain text, consider hashing it in real scenarios)
+        if (!consumer.getPassword().equals(password)) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        return consumer; // Return consumer details if validation succeeds
+    }
 }

@@ -15,4 +15,6 @@ public interface ConsumerService {
     Consumer getConsumerById(int id);
 
     List<Consumer> getAllConsumers();
+
+    Consumer login(String email, String password);
 }
