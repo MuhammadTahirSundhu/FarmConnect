@@ -37,14 +37,21 @@ public class OrderServiceImpl implements OrderService {
         }
 
         OrderEntity orderEntity = new OrderEntity();
-        BeanUtils.copyProperties(order, orderEntity);
+        // Copy properties manually for better control
+        orderEntity.setOrderID(order.getOrderID());
+        orderEntity.setStatus(order.getStatus());
+        orderEntity.setTotalPrice(order.getTotalPrice());
 
         ConsumerEntity consumer = consumerRepository.findById(order.getConsumerID())
                 .orElseThrow(() -> new RuntimeException("Consumer with ID " + order.getConsumerID() + " not found"));
         orderEntity.setConsumer(consumer);
         orderRepo.save(orderEntity);
+
+        // Set the consumerID in the response object
+        order.setConsumerID(consumer.getConsumerID());
         return order;
     }
+
 
     @Override
     public Order getOrderById(int orderId) {
@@ -52,12 +59,21 @@ public class OrderServiceImpl implements OrderService {
         if (optionalOrderEntity.isPresent()) {
             OrderEntity orderEntity = optionalOrderEntity.get();
             Order order = new Order();
+
+            // Copy properties from OrderEntity to Order
             BeanUtils.copyProperties(orderEntity, order);
+
+            // Manually set the consumerID
+            if (orderEntity.getConsumer() != null) {
+                order.setConsumerID(orderEntity.getConsumer().getConsumerID());
+            }
+
             return order;
         } else {
             throw new RuntimeException("Order with ID " + orderId + " not found.");
         }
     }
+
 
     @Override
     public List<Order> getAllOrders() {
@@ -66,9 +82,12 @@ public class OrderServiceImpl implements OrderService {
         return orderEntities.stream()
                 .map(orderEntity -> {
                     Order order = new Order();
-                    BeanUtils.copyProperties(orderEntity, order);
+                    // Manual mapping for IDs and other fields
+                    order.setOrderID(orderEntity.getOrderID());
+                    order.setStatus(orderEntity.getStatus());
+                    order.setTotalPrice(orderEntity.getTotalPrice());
 
-                    // Manually map consumerId
+                    // Map consumer ID if the consumer exists
                     if (orderEntity.getConsumer() != null) {
                         order.setConsumerID(orderEntity.getConsumer().getConsumerID());
                     }
@@ -77,6 +96,7 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<Order> getOrdersByConsumerId(int consumerId) {
