@@ -5,6 +5,7 @@ import com.example.springone.ConsumerPackage.Repositry.ConsumerRepository;
 import com.example.springone.FarmersPackage.Entity.FarmerEntity;
 import com.example.springone.FarmersPackage.Repositry.FarmerRepository;
 import com.example.springone.NotificationPackage.Entity.NotificationEntity;
+import com.example.springone.NotificationPackage.HelperClasses.EmailService;
 import com.example.springone.NotificationPackage.Model.Notification;
 import com.example.springone.NotificationPackage.Repositry.NotificationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -28,11 +29,15 @@ public class NotificationServiceImpl implements NotificationService {
     private FarmerRepository farmerRepo;
     private ConsumerRepository consumerRepo;
 
+    @Autowired
+    private EmailService emailService;  // Inject the EmailService
 
-    public NotificationServiceImpl(NotificationRepository notificationRepo, FarmerRepository farmerRepo, ConsumerRepository consumerRepo) {
+    public NotificationServiceImpl(NotificationRepository notificationRepo, FarmerRepository farmerRepo,
+                                   ConsumerRepository consumerRepo, EmailService emailService) {
         this.notificationRepo = notificationRepo;
-        this.farmerRepo=farmerRepo;
+        this.farmerRepo = farmerRepo;
         this.consumerRepo = consumerRepo;
+        this.emailService = emailService;
     }
 
     @Override
@@ -99,18 +104,22 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Notification sendNotificationToFarmer(int notificationId, int farmerid) {
+    public Notification sendNotificationToFarmer(int notificationId, int farmerId) {
         try {
             NotificationEntity notification = notificationRepo.findById(notificationId)
                     .orElseThrow(() -> new RuntimeException("Notification with ID " + notificationId + " not found"));
 
-            FarmerEntity farmer = farmerRepo.findById(farmerid)
-                    .orElseThrow(() -> new RuntimeException("Farmer with ID " + farmerid + " not found"));
+            FarmerEntity farmer = farmerRepo.findById(farmerId)
+                    .orElseThrow(() -> new RuntimeException("Farmer with ID " + farmerId + " not found"));
 
             notification.addRecipient(farmer.getEmail());
             notificationRepo.save(notification);
+
+            // Send email to farmer
+            emailService.sendEmail(farmer.getEmail(), "You are ruined!!!", notification.getMessage());
+
             Notification notification1 = new Notification();
-            BeanUtils.copyProperties(notification,notification1);
+            BeanUtils.copyProperties(notification, notification1);
             return notification1;
         } catch (Exception e) {
             log.error("Error while sending notification to farmer", e);
@@ -119,21 +128,23 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Notification sendNotificationToConsumer(int notificationId, int consumerid) {
+    public Notification sendNotificationToConsumer(int notificationId, int consumerId) {
         try {
             NotificationEntity notification = notificationRepo.findById(notificationId)
                     .orElseThrow(() -> new RuntimeException("Notification with ID " + notificationId + " not found"));
 
-            ConsumerEntity consumer = consumerRepo.findById(consumerid)
-                    .orElseThrow(() -> new RuntimeException("Consumer with ID " + consumerid + " not found"));
+            ConsumerEntity consumer = consumerRepo.findById(consumerId)
+                    .orElseThrow(() -> new RuntimeException("Consumer with ID " + consumerId + " not found"));
 
             notification.addRecipient(consumer.getEmail());
             notificationRepo.save(notification);
 
-            Notification notification1 = new Notification();
-            BeanUtils.copyProperties(notification,notification1);
-            return notification1;
+            // Send email to consumer
+            emailService.sendEmail(consumer.getEmail(), "You are ruined!!!", notification.getMessage());
 
+            Notification notification1 = new Notification();
+            BeanUtils.copyProperties(notification, notification1);
+            return notification1;
         } catch (Exception e) {
             log.error("Error while sending notification to consumer", e);
             throw new RuntimeException("Failed to send notification");
