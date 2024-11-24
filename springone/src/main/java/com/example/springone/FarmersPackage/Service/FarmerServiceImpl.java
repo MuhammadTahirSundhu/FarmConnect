@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,8 +27,10 @@ public class FarmerServiceImpl implements FarmerService {
     @Override
     public Farmer insertFarmer(Farmer farmer) {
 
+        Timestamp date = new Timestamp(System.currentTimeMillis());
         FarmerEntity farmerEntity = new FarmerEntity();
         BeanUtils.copyProperties(farmer,farmerEntity);
+        farmerEntity.setRegistereddate(date);
         farmerRepo.save(farmerEntity);
         return farmer;
 

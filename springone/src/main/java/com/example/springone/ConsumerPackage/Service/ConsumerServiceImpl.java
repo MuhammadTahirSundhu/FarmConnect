@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,8 +26,10 @@ public class ConsumerServiceImpl implements ConsumerService {
 
     @Override
     public Consumer insertConsumer(Consumer consumer) {
+        Timestamp date = new Timestamp(System.currentTimeMillis());
         ConsumerEntity consumerEntity = new ConsumerEntity();
         BeanUtils.copyProperties(consumer,consumerEntity);
+        consumerEntity.setRegisteredDate(date);
         consumerRepo.save(consumerEntity);
         return consumer;
     }
