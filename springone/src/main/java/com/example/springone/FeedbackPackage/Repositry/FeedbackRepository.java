@@ -11,10 +11,11 @@ import java.util.List;
 @Repository
 public interface FeedbackRepository extends JpaRepository<FeedbackEntity,Integer> {
 
-//    @Query("SELECT f FROM FeedbackEntity f WHERE f.consumerEntity.consumerId = :consumerID")
-//    List<FeedbackEntity> findByConsumerId(@Param("consumerID") int consumerID);
+    @Query("SELECT f FROM FeedbackEntity f WHERE f.consumerEntity.consumerID = :consumerID")
+    List<FeedbackEntity> findByConsumerId(@Param("consumerID") int consumerID);
 
 
-//    @Query("SELECT f FROM FeedbackEntity f WHERE f.farmer.id = :farmerID")
-//    List<FeedbackEntity> findByFarmerID(int farmerID);
+    @Query("SELECT f FROM FeedbackEntity f WHERE f.farmerEntity.farmerid = :farmerID")
+    List<FeedbackEntity> findByFarmerId(@Param("farmerID") int farmerID);
+
 }

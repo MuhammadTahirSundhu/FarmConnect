@@ -3,6 +3,7 @@ package com.example.springone.CartPackage.Controller;
 import com.example.springone.CartPackage.Model.Cart;
 import com.example.springone.CartPackage.Service.CartService;
 import com.example.springone.DTO.LoginRequest;
+import com.example.springone.ProductsPackage.Model.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,5 +83,7 @@ public class CartController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
 }

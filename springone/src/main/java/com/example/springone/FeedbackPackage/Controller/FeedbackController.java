@@ -3,6 +3,7 @@ package com.example.springone.FeedbackPackage.Controller;
 import com.example.springone.FeedbackPackage.Model.Feedback;
 import com.example.springone.FeedbackPackage.Service.FeedbackService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -96,17 +97,36 @@ public class FeedbackController {
 //        }
 //    }
 
-    // Get feedback by Farmer ID
-//    @GetMapping("/farmer/{farmerId}")
-//    public ResponseEntity<List<Feedback>> getFeedbackByFarmerId(@PathVariable("farmerId") int farmerId) {
-//        try {
-//            List<Feedback> feedbackList = feedbackService.getFeedbackByFarmerId(farmerId);
-//            if (feedbackList == null || feedbackList.isEmpty()) {
-//                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-//            }
-//            return new ResponseEntity<>(feedbackList, HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+//     Get feedback by Farmer ID
+@GetMapping("/farmer/{farmerId}")
+public ResponseEntity<?> getFeedbackByFarmerId(@PathVariable("farmerId") int farmerId) {
+    try {
+        List<Feedback> feedbackList = feedbackService.getFeedbackByFarmerId(farmerId);
+        if (feedbackList.isEmpty()) {
+            return new ResponseEntity<>("No feedback found for the given farmer ID", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(feedbackList, HttpStatus.OK);
+    } catch (DataAccessException e) {
+        return new ResponseEntity<>("Database error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+    } catch (Exception e) {
+        return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+
+    @GetMapping("/consumer/{consumerId}")
+    public ResponseEntity<?> getFeedbackByConsumerId(@PathVariable("consumerId") int consumerId) {
+        try {
+            List<Feedback> feedbackList = feedbackService.getFeedbackByConsumerId(consumerId);
+            if (feedbackList.isEmpty()) {
+                return new ResponseEntity<>("No feedback found for the given consumer ID", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(feedbackList, HttpStatus.OK);
+        } catch (DataAccessException e) {
+            return new ResponseEntity<>("Database error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

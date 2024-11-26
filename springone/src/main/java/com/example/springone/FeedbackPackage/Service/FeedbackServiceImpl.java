@@ -159,31 +159,43 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Feedback> getFeedbackByFarmerId(int farmerId) {
+        List<FeedbackEntity> feedbackEntities = feedbackRepo.findByFarmerId(farmerId);
 
-    // Get Feedback by Consumer ID
-//    @Override
-//    public List<Feedback> getFeedbackByConsumerId(int consumerID) {
-//        List<FeedbackEntity> feedbackEntities = feedbackRepo.findByConsumerId(consumerID);
-//        return feedbackEntities.stream()
-//                .map(feedbackEntity -> {
-//                    Feedback feedback = new Feedback();
-//                    BeanUtils.copyProperties(feedbackEntity, feedback); // Copy properties from entity to model
-//                    return feedback;
-//                })
-//                .collect(Collectors.toList());
-//    }
+        return feedbackEntities.stream()
+                .map(feedbackEntity -> {
+                    Feedback feedback = new Feedback();
+                    BeanUtils.copyProperties(feedbackEntity, feedback); // Copy properties from entity to model
 
-    // Get Feedback by Farmer ID
-//    @Override
-//    public List<Feedback> getFeedbackByFarmerId(int farmerID) {
-//        List<FeedbackEntity> feedbackEntities = feedbackRepo.findByFarmerID(farmerID);
-//        return feedbackEntities.stream()
-//                .map(feedbackEntity -> {
-//                    Feedback feedback = new Feedback();
-//                    BeanUtils.copyProperties(feedbackEntity, feedback); // Copy properties from entity to model
-//                    return feedback;
-//                })
-//                .collect(Collectors.toList());
-//    }
+                    // Manually set the IDs for each Feedback object
+                    feedback.setFarmerID(feedbackEntity.getFarmer().getFarmerid());
+                    feedback.setConsumerID(feedbackEntity.getConsumer().getConsumerID());
+
+                    return feedback;
+                })
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<Feedback> getFeedbackByConsumerId(int consumerId) {
+        // Fetch feedback entities using consumer ID
+        List<FeedbackEntity> feedbackEntities = feedbackRepo.findByConsumerId(consumerId);
+
+        // Map each FeedbackEntity to Feedback
+        return feedbackEntities.stream()
+                .map(feedbackEntity -> {
+                    Feedback feedback = new Feedback();
+                    BeanUtils.copyProperties(feedbackEntity, feedback); // Copy properties from entity to model
+
+                    // Manually set the IDs for each Feedback object
+                    feedback.setFarmerID(feedbackEntity.getFarmer().getFarmerid());
+                    feedback.setConsumerID(feedbackEntity.getConsumer().getConsumerID());
+
+                    return feedback;
+                })
+                .collect(Collectors.toList());
+    }
 
 }

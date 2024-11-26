@@ -6,6 +6,7 @@ import com.example.springone.CartPackage.Model.CartProduct;
 import com.example.springone.CartPackage.Repositry.CartProductRepository;
 import com.example.springone.CartPackage.Repositry.CartRepository;
 import com.example.springone.ProductsPackage.Entity.ProductEntity;
+import com.example.springone.ProductsPackage.Model.Product;
 import com.example.springone.ProductsPackage.Repositry.ProductRepositry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -126,4 +127,31 @@ public class CartProductServiceImpl implements CartProductService {
             throw e;
         }
     }
+
+    @Override
+    public List<Product> getProductsByCartId(int id) {
+        try {
+            // Fetch all CartProductEntity by cartID
+            List<CartProductEntity> cartProductEntities = cartProductRepo.findByCartId(id);
+
+            // Map CartProductEntity to Product DTO
+            return cartProductEntities.stream().map(cartProductEntity -> {
+                Product product = new Product();
+                ProductEntity productEntity = cartProductEntity.getProduct();
+
+                // Copy properties from ProductEntity to Product DTO
+                BeanUtils.copyProperties(productEntity, product);
+                if (productEntity.getFarmer() != null) {
+                    product.setFarmerID(productEntity.getFarmer().getFarmerid());
+                }
+                // Add quantity from CartProductEntity to Product DTO
+                product.setStockQuantity(cartProductEntity.getQuantity());
+                return product;
+            }).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error fetching products for cart ID {}: {}", id, e.getMessage(), e);
+            throw e;
+        }
+    }
+
 }

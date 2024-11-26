@@ -3,6 +3,8 @@ package com.example.springone.OrdersPackage.Entity;
 import com.example.springone.ConsumerPackage.Entity.ConsumerEntity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -14,9 +16,9 @@ public class OrderEntity {
     @Column(name = "orderID")
     private int orderID;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "datePlaced", nullable = false) // Date order was placed, mandatory
-    private Date datePlaced;
+    @Column(name = "datePlaced", nullable = false)
+    private Timestamp datePlaced;
+
 
     @Column(name = "status", nullable = false, length = 100)
     private String status; // Changed to String to hold status as a string value
@@ -32,7 +34,7 @@ public class OrderEntity {
     public OrderEntity() {}
 
     // Constructor with parameters
-    public OrderEntity(Date datePlaced, String status, ConsumerEntity consumer, BigDecimal totalPrice) {
+    public OrderEntity(Timestamp datePlaced, String status, ConsumerEntity consumer, BigDecimal totalPrice) {
         this.datePlaced = datePlaced;
         this.status = status; // Accepting status as a String
         this.consumer = consumer;
@@ -48,11 +50,11 @@ public class OrderEntity {
         this.orderID = orderID;
     }
 
-    public Date getDatePlaced() {
+    public Timestamp getDatePlaced() {
         return datePlaced;
     }
 
-    public void setDatePlaced(Date datePlaced) {
+    public void setDatePlaced(Timestamp datePlaced) {
         this.datePlaced = datePlaced;
     }
 

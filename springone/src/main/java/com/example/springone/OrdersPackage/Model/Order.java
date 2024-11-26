@@ -1,12 +1,14 @@
 package com.example.springone.OrdersPackage.Model;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Order {
 
     private int orderID; // Unique identifier for the order
-    private Date datePlaced; // Date the order was placed
+    private Timestamp datePlaced; // Date the order was placed
     private String status; // Status of the order (as a String)
     private int consumerID; // ID of the consumer who placed the order
     private BigDecimal totalPrice; // Total price of the order
@@ -15,7 +17,7 @@ public class Order {
     public Order() {}
 
     // Constructor with parameters
-    public Order(int orderID, Date datePlaced, String status, int consumerID, BigDecimal totalPrice) {
+    public Order(int orderID, Timestamp datePlaced, String status, int consumerID, BigDecimal totalPrice) {
         this.orderID = orderID;
         this.datePlaced = datePlaced;
         this.status = status;
@@ -32,11 +34,11 @@ public class Order {
         this.orderID = orderID;
     }
 
-    public Date getDatePlaced() {
+    public Timestamp getDatePlaced() {
         return datePlaced;
     }
 
-    public void setDatePlaced(Date datePlaced) {
+    public void setDatePlaced(Timestamp datePlaced) {
         this.datePlaced = datePlaced;
     }
 

@@ -17,7 +17,9 @@ public interface FeedbackService {
 
     List<Feedback> getAllFeedback();
 
-//    List<Feedback> getFeedbackByConsumerId(int consumerId);
+    List<Feedback> getFeedbackByFarmerId(int farmerId);
+
+    List<Feedback> getFeedbackByConsumerId(int consumerId);
 
 //    List<Feedback> getFeedbackByFarmerId(int farmerId);
 }

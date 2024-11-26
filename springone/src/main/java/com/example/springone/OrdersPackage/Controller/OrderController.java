@@ -3,6 +3,7 @@ package com.example.springone.OrdersPackage.Controller;
 import com.example.springone.OrdersPackage.Model.Order;
 import com.example.springone.OrdersPackage.Service.OrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +23,26 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+    public ResponseEntity<?> createOrder(@RequestBody Order order) {
         try {
             log.debug("Creating order: {}", order);
             Order createdOrder = orderService.createOrder(order);
             return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            // Handle validation errors
+            log.error("Validation error: {}", e.getMessage(), e);
+            return new ResponseEntity<>("Invalid order data: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (DataIntegrityViolationException e) {
+            // Handle database constraint violations
+            log.error("Database constraint violation: {}", e.getMessage(), e);
+            return new ResponseEntity<>("Database error: " + e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {
-            log.error("Error occurred while creating order", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            // Handle all other errors
+            log.error("Unexpected error while creating order", e);
+            return new ResponseEntity<>("Internal server error occurred. Please try again later.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/{orderId}")
     public ResponseEntity<Order> getOrderById(@PathVariable int orderId) {

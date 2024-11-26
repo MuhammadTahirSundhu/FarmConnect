@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,12 +36,13 @@ public class OrderServiceImpl implements OrderService {
         if (consumerRepository == null) {
             throw new IllegalStateException("ConsumerRepository is not initialized");
         }
-
+        Timestamp date = new Timestamp(System.currentTimeMillis());
         OrderEntity orderEntity = new OrderEntity();
         // Copy properties manually for better control
         orderEntity.setOrderID(order.getOrderID());
         orderEntity.setStatus(order.getStatus());
         orderEntity.setTotalPrice(order.getTotalPrice());
+        orderEntity.setDatePlaced(date);
 
         ConsumerEntity consumer = consumerRepository.findById(order.getConsumerID())
                 .orElseThrow(() -> new RuntimeException("Consumer with ID " + order.getConsumerID() + " not found"));
@@ -48,6 +50,7 @@ public class OrderServiceImpl implements OrderService {
         orderRepo.save(orderEntity);
 
         // Set the consumerID in the response object
+        order.setOrderID(orderEntity.getOrderID());
         order.setConsumerID(consumer.getConsumerID());
         return order;
     }
